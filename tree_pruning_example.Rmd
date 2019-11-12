@@ -1,0 +1,44 @@
+---
+title: "Decision tree pruning example"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(rpart)
+library(kableExtra)
+library(rpart.plot)
+```
+
+Let's make an example from the documentation. We set up a control structure to create a large tree by allowing leaves to contain only a few instances.
+
+```{r}
+ctrl <- rpart.control(minbucket = 3)
+```
+
+Then we fit a tree using the control object and the test data from the `rpart`package.
+
+```{r}
+fit <- rpart(Kyphosis ~ Age + Number + Start, data = kyphosis, control = ctrl)
+
+```
+
+Let's look at the tree.
+
+```{r}
+rpart.plot::rpart.plot(fit, type = 5, extra = 101)
+```
+
+And now some more details about the fitted tree.
+
+```{r}
+print(fit)
+
+xh_frame <- kable(fit$frame)
+kable_styling(xh_frame, "striped")
+
+xh_yval2 <- kable(fit$frame$yval2)
+kable_styling(xh_yval2, "striped")
+```
+
