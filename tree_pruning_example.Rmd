@@ -7,6 +7,8 @@ output:
 
 ```{r}
 library(rpart)
+library(magrittr)
+library(dplyr)
 library(kableExtra)
 library(rpart.plot)
 ```
@@ -14,7 +16,7 @@ library(rpart.plot)
 Let's make an example from the documentation. We set up a control structure to create a large tree by allowing leaves to contain only a few instances.
 
 ```{r}
-ctrl <- rpart.control(minbucket = 3)
+ctrl <- rpart.control(minbucket = 1)
 ```
 
 Then we fit a tree using the control object and the test data from the `rpart`package.
@@ -40,5 +42,16 @@ kable_styling(xh_frame, "striped")
 
 xh_yval2 <- kable(fit$frame$yval2)
 kable_styling(xh_yval2, "striped")
+```
+
+Let's now compute the confusion matrix for each node.
+```{r}
+cfm <- as.data.frame(fit$frame$yval2)
+cfm <- cfm %>% mutate(TP = if_else(V1 == 1, V2, 0), 
+                      TN = if_else(V1 == 1, 0, V3), 
+                      FP = if_else(V1 == 1, V3, 0),
+                      FN = if_else(V1 == 1, 0, V2))
+
+kable(cfm) %>% kable_styling("striped")
 ```
 
