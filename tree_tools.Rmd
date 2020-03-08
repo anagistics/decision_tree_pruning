@@ -34,6 +34,20 @@ Je nach C sind n Instanzen pp oder pn:
 C == p: pp == n, pn == 0
 C == n: pp = 0, pn == n
 
+The following function expects a `data.frame` with three columns:
+* C: the class
+* P: the number of positive instances
+* N: the number of negative instances
+
+```{r}
+join_confusion_info <- function(treeframe) {
+  treeframe %>% mutate(TP = if_else(C == 1, P, 0), 
+                      TN = if_else(C == 1, 0, N), 
+                      FP = if_else(C == 1, N, 0),
+                      FN = if_else(C == 1, 0, P))  
+}
+```
+
 
 
 
